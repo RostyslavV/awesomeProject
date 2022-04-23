@@ -23,7 +23,7 @@ func (u *userDB) Create(ctx context.Context, user users.User) error {
 	}
 
 	_, err = u.pool.Exec(ctx, `INSERT INTO users(id, email, name, password, created_at) 
-						VALUES ($1,$2,$3,$4,$5)`, user.ID, user.Name, user.Email, passwordHast, user.CreatedAt)
+						VALUES ($1,$2,$3,$4,$5)`, user.ID, user.Email, user.Name, passwordHast, user.CreatedAt)
 	if err != nil {
 		return err
 	}
@@ -33,7 +33,7 @@ func (u *userDB) Create(ctx context.Context, user users.User) error {
 
 // Delete - deletes user from DB.
 func (u *userDB) Delete(ctx context.Context, uuid uuid.UUID) error {
-	_, err := u.pool.Exec(ctx, `DELETE FROM users WHERE id = $1`)
+	_, err := u.pool.Exec(ctx, `DELETE FROM users WHERE id = $1`, uuid)
 	if err != nil {
 		return err
 	}
@@ -43,9 +43,9 @@ func (u *userDB) Delete(ctx context.Context, uuid uuid.UUID) error {
 
 // Get - returns user from DB.
 func (u *userDB) Get(ctx context.Context, uuid uuid.UUID) (user users.User, err error) {
-	row := u.pool.QueryRow(ctx, `SELECT id, email, name, password, created_at FROM users WHERE id = $1`)
+	row := u.pool.QueryRow(ctx, `SELECT id, email, name, password, created_at FROM users WHERE id = $1`, uuid)
 
-	err = row.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.CreatedAt)
+	err = row.Scan(&user.ID, &user.Email, &user.Name, &user.Password, &user.CreatedAt)
 	if err != nil {
 		return users.User{}, err
 	}
@@ -55,7 +55,7 @@ func (u *userDB) Get(ctx context.Context, uuid uuid.UUID) (user users.User, err 
 
 // Update - updates user in DB.
 func (u *userDB) Update(ctx context.Context, user users.User) error {
-	_, err := u.pool.Exec(ctx, `UPDATE USERS SET email=$1, name=$2, password=$3, created_at=$4`)
+	_, err := u.pool.Exec(ctx, `UPDATE users SET email = $1, name = $2, password = $3 WHERE id = $4`, user.Email, user.Name, user.Password, user.ID)
 	if err != nil {
 		return err
 	}

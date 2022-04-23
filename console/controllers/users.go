@@ -9,12 +9,12 @@ import (
 	"encoding/json"
 )
 
-// User - creates new structure
+// Users creates new structure.
 type Users struct {
 	users *users.Service
 }
 
-// NewUser - creates new means of users
+// NewUsers creates new means of users.
 func NewUsers(users *users.Service) *Users {
 	return &Users{users: users}
 }
@@ -27,7 +27,7 @@ type CreateRequest struct {
 }
 
 // Create - creates user into server
-func (u *Users) Create(w http.ResponseWriter, r *http.Request) {
+func (u *Users)Create(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	var req CreateRequest

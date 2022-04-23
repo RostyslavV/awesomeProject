@@ -45,6 +45,5 @@ func (s *Service) Update(ctx context.Context, id uuid.UUID, name, email, passwor
 		Name:      name,
 		Email:     email,
 		Password:  []byte(password),
-		CreatedAt: time.Now(),
 	})
 }
